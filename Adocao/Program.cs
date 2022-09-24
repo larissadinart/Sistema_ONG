@@ -65,9 +65,8 @@ namespace Adocao
             Banco conn = new Banco();
             SqlConnection conexaosql = new SqlConnection(conn.Caminho());
             conexaosql.Open();
-            string sql = $"insert into Adotante(chip, família, raca, sexo,nome) values ('{a.Chip}' , " +
+            string sql = $"insert into Animal(chip, familia, raca, sexo,nome) values ('{a.Chip}' , " +
                 $"'{a.Familia}', '{a.Raca}', '{a.Sexo}', '{a.Nome}');";
-            Console.WriteLine(sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
             cmd.ExecuteNonQuery();
             conexaosql.Close();
