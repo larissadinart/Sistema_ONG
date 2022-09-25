@@ -34,6 +34,7 @@ namespace Adocao
             char sexo;
             int chip;
 
+            Console.Clear();
             Console.WriteLine("Cadastro de Animal: \n\n");
             Console.WriteLine("Digite o chip do Animal: ");
             chip = int.Parse(Console.ReadLine());
@@ -48,5 +49,7 @@ namespace Adocao
 
            return new Animal (chip,familia,raca,sexo,n);
         }
+
+        
     }
 }

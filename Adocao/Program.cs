@@ -6,7 +6,7 @@ namespace Adocao
 {
     internal class Program
     {
-       
+
         static Adotante p = new Adotante();
         static Animal a = new Animal();
         static void Main(string[] args)
@@ -24,20 +24,18 @@ namespace Adocao
                 case 1:
                     a = a.CadastrarAnimal();
                     InserirAnimal_BD(a);
-                    Console.WriteLine("Animal cadastrado com sucesso!\n\nAperte enter para continuar...");
-                    Console.ReadKey();
                     Console.Clear();
                     Menu();
                     break;
                 case 2:
                     p = p.CadastrarAdotante();
                     InserirAdotante_BD(p);
-                    Console.WriteLine("Adotante cadastrado com sucesso!\n\nAperte enter para continuar...");
-                    Console.ReadKey();
                     Console.Clear();
                     Menu();
                     break;
-                case 3:
+                case 3:CadastrarAdocao();
+                    Console.Clear();
+                    Menu();
                     break;
                 case 4:
                     break;
@@ -59,7 +57,6 @@ namespace Adocao
             cmd.ExecuteNonQuery();
             conexaosql.Close();
         }
-
         static public void InserirAnimal_BD(Animal animal)
         {
             Banco conn = new Banco();
@@ -71,6 +68,115 @@ namespace Adocao
             cmd.ExecuteNonQuery();
             conexaosql.Close();
         }
+        static public void CadastrarAdocao()
+        {
+            Console.WriteLine("Nova adoção: \n\n");
+
+            if(BuscarAdotante() && BuscarAnimal())
+            {
+                string sql = $"INSERT INTO dbo.Adocao(cpf, chip, dataAdocao) values('{p.Cpf}','{a.Chip}', '{DateTime.Now}')";
+            }
+            else
+            {
+                Console.WriteLine("Cadastro de Adotante ou Animal não encontrado! Aperte enter para continuar...");
+                Console.ReadKey();
+            }
+        }
+        static public bool BuscarAdotante()
+        {
+            string cpf, sql = $"SELECT Nome, Cpf, Sexo, Data_nasc, Logradouro, Numero, Bairro, Cep, Cidade, Telefone FROM Adotante;";
+
+            Console.WriteLine("Digite o CPF do adotante: ");
+            cpf = Console.ReadLine();
+
+            try
+            {
+                Banco conn = new Banco();
+                SqlConnection conexaosql = new SqlConnection(conn.Caminho());
+                conexaosql.Open();
+                SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        Console.WriteLine("Cadastro não localizado!Aperte enter para continuar...");
+                        Console.ReadKey();
+                        return false;
+                    }
+                    else
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Nome: {reader.GetString(0)}");
+                            Console.WriteLine($"CPF: {reader.GetString(1)}");
+                            Console.WriteLine($"Sexo: {reader.GetChar(2)}");
+                            Console.WriteLine($"Data de nascimento: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Logradouro: {reader.GetString(4)}");
+                            Console.WriteLine($"Número: {reader.GetInt32(5)}");
+                            Console.WriteLine($"Bairro: {reader.GetString(6)}");
+                            Console.WriteLine($"CEP: {reader.GetString(7)}");
+                            Console.WriteLine($"Cidade: {reader.GetString(8)}");
+                            Console.WriteLine($"Telefone: {reader.GetString(9)}");
+                            return true;
+                        }
+                        conexaosql.Close();
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine($"Erro número {e.Number}, tente novamente.");
+            }return false;
+        }
+        static public bool BuscarAnimal()
+        {
+            string chip, sql = $"SELECT Chip,Familia,Raca,Sexo,Nome FROM Animal;";
+
+            Console.WriteLine("Digite o CHIP do animal: ");
+            chip = Console.ReadLine();
+
+            Banco conn = new Banco();
+            SqlConnection conexaosql = new SqlConnection(conn.Caminho());
+            conexaosql.Open();
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand(sql, conexaosql);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        Console.WriteLine("Animal não localizado...Aperte enter para continuar...");
+                        Console.ReadKey();   
+                    }
+                    return false;
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"Chip de Identificação: {reader.GetInt32(0)}");
+                        Console.WriteLine($"Familia: {reader.GetString(1)}");
+                        Console.WriteLine($"Raça: {reader.GetString(2)}");
+                        Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                        Console.WriteLine($"Nome: {reader.GetString(4)}\n");
+                        return true;
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("Erro código " + e.Number + "Contate o administrador");
+                return false;
+            }
+            conexaosql.Close();
+
+        }
+
+
+
+
     }
 
 }
+
+
+

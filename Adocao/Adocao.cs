@@ -10,13 +10,13 @@ namespace Adocao
     {
         public string Cpf { get; set; }
         public int Chip { get; set; }
-        public int Cod_Adocao { get; set; }
+        public DateTime Data_Adocao { get; set; }
 
-        public Adocao(string cpf, int chip, int cod_Adocao)
+        public Adocao(string cpf, int chip, DateTime data_Adocao)
         {
             Cpf = cpf;
             Chip = chip;
-            Cod_Adocao = cod_Adocao;
+            Data_Adocao = data_Adocao;
         }
     }
 }
