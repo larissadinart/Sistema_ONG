@@ -10,7 +10,7 @@ namespace Adocao
     {
         public string Nome { get; set; }
         public string Cpf { get; set; }
-        public char Sexo { get; set; }
+        public string Sexo { get; set; }
         public DateTime Data_Nasc { get; set; }
         public string Logradouro { get; set; }
         public int Numero { get; set; }
@@ -23,7 +23,7 @@ namespace Adocao
         {
 
         }
-        public Adotante(string nome, string cpf, char sexo, DateTime data_Nasc, string logradouro, int numero, string bairro, string cep, string cidade, string telefone)
+        public Adotante(string nome, string cpf, string sexo, DateTime data_Nasc, string logradouro, int numero, string bairro, string cep, string cidade, string telefone)
         {
             this.Nome = nome;
             this.Cpf = cpf;
@@ -39,22 +39,21 @@ namespace Adocao
 
         public Adotante CadastrarAdotante()
         {
-            string n, cpf, logradouro, bairro, cep, cidade, telefone;
-            char sexo;
+            string n, cpf, logradouro, bairro, cep, cidade, telefone,sexo;
             DateTime datanasc;
             int num;
 
             Console.Clear();
             Console.WriteLine("Cadastro do Adotante: \n");
-            Console.WriteLine("Nome: ");
+            Console.WriteLine("Nome Completo: ");
             n = Console.ReadLine();
             Console.WriteLine("CPF: ");
             cpf = Console.ReadLine();
-            Console.WriteLine("Sexo: ");
-            sexo = char.Parse(Console.ReadLine());
-            Console.WriteLine("Data de nascimento: ");
+            Console.WriteLine("Sexo (F ou M): ");
+            sexo = Console.ReadLine();
+            Console.WriteLine("Data de nascimento (dd/mm/aaaa): ");
             datanasc = DateTime.Parse(Console.ReadLine());
-            Console.WriteLine("Logradouro: ");
+            Console.WriteLine("Logradouro (rua/avenida): ");
             logradouro = Console.ReadLine();
             Console.WriteLine("Número: ");
             num = int.Parse(Console.ReadLine());

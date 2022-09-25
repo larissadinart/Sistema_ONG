@@ -17,8 +17,11 @@ namespace Adocao
         static public void Menu()
         {
             int op;
-            Console.WriteLine("O que deseja fazer?\n\n1-Cadastrar Animal\n2-Cadastrar Adotante\n3-Registrar Adoção\n4-Editar Cadastro de Animal\n5-Editar Cadastro de Adotante");
-            op = int.Parse(Console.ReadLine());
+            do
+            {
+                Console.WriteLine("O que deseja fazer?\n\n1-Cadastrar Animal\n2-Cadastrar Adotante\n3-Registrar Adoção\n4-Editar Cadastro de Animal\n5-Editar Cadastro de Adotante");
+                op = int.Parse(Console.ReadLine());
+            } while (op < 0 || op > 5);
             switch (op)
             {
                 case 1:
@@ -33,7 +36,8 @@ namespace Adocao
                     Console.Clear();
                     Menu();
                     break;
-                case 3:CadastrarAdocao();
+                case 3:
+                    CadastrarAdocao();
                     Console.Clear();
                     Menu();
                     break;
@@ -71,10 +75,11 @@ namespace Adocao
         static public void CadastrarAdocao()
         {
             Console.WriteLine("Nova adoção: \n\n");
-
-            if(BuscarAdotante() && BuscarAnimal())
+            Adotante ad = BuscarAdotante();
+            Animal an = BuscarAnimal();
+            if (ad != null && an != null)
             {
-                string sql = $"INSERT INTO dbo.Adocao(cpf, chip, dataAdocao) values('{p.Cpf}','{a.Chip}', '{DateTime.Now}')";
+                string sql = $"INSERT INTO dbo.Adocao(cpf, chip, dataAdocao) values('{ad.Cpf}','{an.Chip}', '{DateTime.Now}')";
             }
             else
             {
@@ -82,7 +87,7 @@ namespace Adocao
                 Console.ReadKey();
             }
         }
-        static public bool BuscarAdotante()
+        static public Adotante BuscarAdotante()
         {
             string cpf, sql = $"SELECT Nome, Cpf, Sexo, Data_nasc, Logradouro, Numero, Bairro, Cep, Cidade, Telefone FROM Adotante;";
 
@@ -101,7 +106,7 @@ namespace Adocao
                     {
                         Console.WriteLine("Cadastro não localizado!Aperte enter para continuar...");
                         Console.ReadKey();
-                        return false;
+                        return null;
                     }
                     else
                     {
@@ -109,7 +114,7 @@ namespace Adocao
                         {
                             Console.WriteLine($"Nome: {reader.GetString(0)}");
                             Console.WriteLine($"CPF: {reader.GetString(1)}");
-                            Console.WriteLine($"Sexo: {reader.GetChar(2)}");
+                            Console.WriteLine($"Sexo: {reader.GetString(2)}");
                             Console.WriteLine($"Data de nascimento: {reader.GetDateTime(3)}");
                             Console.WriteLine($"Logradouro: {reader.GetString(4)}");
                             Console.WriteLine($"Número: {reader.GetInt32(5)}");
@@ -117,7 +122,9 @@ namespace Adocao
                             Console.WriteLine($"CEP: {reader.GetString(7)}");
                             Console.WriteLine($"Cidade: {reader.GetString(8)}");
                             Console.WriteLine($"Telefone: {reader.GetString(9)}");
-                            return true;
+                            Console.WriteLine("\n\nAperte enter para confirmar.");
+                            Console.ReadKey();
+                            return new Adotante(reader.GetString(0), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), reader.GetString(4), reader.GetInt32(5), reader.GetString(6), reader.GetString(7), reader.GetString(8), reader.GetString(9));   
                         }
                         conexaosql.Close();
                     }
@@ -126,49 +133,52 @@ namespace Adocao
             catch (SqlException e)
             {
                 Console.WriteLine($"Erro número {e.Number}, tente novamente.");
-            }return false;
+            }
+            return null;
         }
-        static public bool BuscarAnimal()
+        static public Animal BuscarAnimal()
         {
             string chip, sql = $"SELECT Chip,Familia,Raca,Sexo,Nome FROM Animal;";
 
+            Console.Clear();
             Console.WriteLine("Digite o CHIP do animal: ");
             chip = Console.ReadLine();
-
-            Banco conn = new Banco();
-            SqlConnection conexaosql = new SqlConnection(conn.Caminho());
-            conexaosql.Open();
-
             try
             {
+                Banco conn = new Banco();
+                SqlConnection conexaosql = new SqlConnection(conn.Caminho());
+                conexaosql.Open();
                 SqlCommand cmd = new SqlCommand(sql, conexaosql);
-
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     if (!reader.HasRows)
                     {
                         Console.WriteLine("Animal não localizado...Aperte enter para continuar...");
-                        Console.ReadKey();   
+                        Console.ReadKey();
+                        return null;
                     }
-                    return false;
-                    while (reader.Read())
+                    else
                     {
-                        Console.WriteLine($"Chip de Identificação: {reader.GetInt32(0)}");
-                        Console.WriteLine($"Familia: {reader.GetString(1)}");
-                        Console.WriteLine($"Raça: {reader.GetString(2)}");
-                        Console.WriteLine($"Sexo: {reader.GetString(3)}");
-                        Console.WriteLine($"Nome: {reader.GetString(4)}\n");
-                        return true;
-                    }
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Chip de Identificação: {reader.GetInt32(0)}");
+                            Console.WriteLine($"Familia: {reader.GetString(1)}");
+                            Console.WriteLine($"Raça: {reader.GetString(2)}");
+                            Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                            Console.WriteLine($"Nome: {reader.GetString(4)}\n");
+                            Console.WriteLine("\n\nAperte enter para confirmar a adoção.");
+                            Console.ReadKey();
+                            return new Animal(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4));
+                            
+                        }
+                    }conexaosql.Close();
                 }
             }
             catch (SqlException e)
             {
-                Console.WriteLine("Erro código " + e.Number + "Contate o administrador");
-                return false;
+                Console.WriteLine("Erro código " + e.Number + "Contate o administrador");      
             }
-            conexaosql.Close();
-
+            return null;
         }
 
 

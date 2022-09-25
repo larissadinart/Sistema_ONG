@@ -11,7 +11,7 @@ namespace Adocao
         public int Chip { get; set; }
         public string Familia { get; set; }
         public string Raca { get; set; }
-        public char Sexo { get; set; }
+        public string Sexo { get; set; }
         public string Nome { get; set; }
 
         public Animal()
@@ -19,7 +19,7 @@ namespace Adocao
 
         }
 
-        public Animal(int chip, string familia, string raca, char sexo, string nome)
+        public Animal(int chip, string familia, string raca, string sexo, string nome)
         {
             this.Chip = chip;
             this.Familia = familia;
@@ -30,20 +30,19 @@ namespace Adocao
 
         public Animal CadastrarAnimal()
         {
-            string familia,raca,n;
-            char sexo;
+            string familia,raca,n,sexo;
             int chip;
 
             Console.Clear();
             Console.WriteLine("Cadastro de Animal: \n\n");
             Console.WriteLine("Digite o chip do Animal: ");
             chip = int.Parse(Console.ReadLine());
-            Console.WriteLine("Família: ");
+            Console.WriteLine("Família (cachorro/gato): ");
             familia = Console.ReadLine();
             Console.WriteLine("Raça: ");
             raca = Console.ReadLine();
-            Console.WriteLine("Sexo: ");
-            sexo = char.Parse(Console.ReadLine());
+            Console.WriteLine("Sexo (F ou M): "); ;
+            sexo = Console.ReadLine();
             Console.WriteLine("Nome: ");
             n = Console.ReadLine();
 
