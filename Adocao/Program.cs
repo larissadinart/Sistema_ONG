@@ -28,17 +28,23 @@ namespace Adocao
                 case 1:
                     a = a.CadastrarAnimal();
                     InserirAnimal_BD(a);
+                    Console.WriteLine("\n\nAnimal cadastrado com sucesso!Aperte enter para voltar ao menu.");
+                    Console.ReadKey();
                     Console.Clear();
                     Menu();
                     break;
                 case 2:
                     p = p.CadastrarAdotante();
                     InserirAdotante_BD(p);
+                    Console.WriteLine("Adotante cadastrado com sucesso!Aperte enter para voltar ao menu.");
+                    Console.ReadKey();
                     Console.Clear();
                     Menu();
                     break;
                 case 3:
                     CadastrarAdocao();
+                    Console.WriteLine("Adoção registrada com sucesso!Aperte enter para voltar ao menu.");
+                    Console.ReadKey();
                     Console.Clear();
                     Menu();
                     break;
@@ -99,7 +105,7 @@ namespace Adocao
         static public Adotante BuscarAdotante()
         {
             string cpf, sql = $"SELECT Nome, Cpf, Sexo, Data_nasc, Logradouro, Numero, Bairro, Cep, Cidade, Telefone FROM Adotante;";
-
+            Console.Clear();
             Console.WriteLine("Digite o CPF do adotante: ");
             cpf = Console.ReadLine();
 
@@ -121,6 +127,7 @@ namespace Adocao
                     {
                         while (reader.Read())
                         {
+                            Console.Clear();
                             Console.WriteLine($"Nome: {reader.GetString(0)}");
                             Console.WriteLine($"CPF: {reader.GetString(1)}");
                             Console.WriteLine($"Sexo: {reader.GetString(2)}");
@@ -170,12 +177,13 @@ namespace Adocao
                     {
                         while (reader.Read())
                         {
+                            Console.Clear();
                             Console.WriteLine($"Chip de Identificação: {reader.GetInt32(0)}");
                             Console.WriteLine($"Familia: {reader.GetString(1)}");
                             Console.WriteLine($"Raça: {reader.GetString(2)}");
                             Console.WriteLine($"Sexo: {reader.GetString(3)}");
                             Console.WriteLine($"Nome: {reader.GetString(4)}");
-                            Console.WriteLine("\n\nAperte enter para confirmar a adoção.");
+                            Console.WriteLine("\n\nAperte enter para confirmar.");
                             Console.ReadKey();
                             Console.ReadKey();
                             return new Animal(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4));
@@ -195,7 +203,7 @@ namespace Adocao
         {
             int op;
             Console.Clear();
-            Console.WriteLine("Qual cadastro deseja editar?\n1- Adotante\n2- Animal");
+            Console.WriteLine("Qual cadastro deseja editar?\n\n1- Adotante\n2- Animal");
             op = int.Parse(Console.ReadLine());
 
             if (op == 1)
@@ -206,18 +214,17 @@ namespace Adocao
                     Banco conn = new Banco();
                     SqlConnection conexaosql = new SqlConnection(conn.Caminho());
                     conexaosql.Open();
-
-                    int opcao;
                     Console.Clear();
-                    Console.WriteLine("Qual informação deseja editar?\n1-Nome\n2-Sexo\n3-Data de Nascimento\n4-Endereço\n5-Telefone");
-                    opcao = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Qual informação deseja editar?\n\n1-Nome\n2-Sexo\n3-Data de Nascimento\n4-Endereço\n5-Telefone");
+                    int opcao = int.Parse(Console.ReadLine());
                     switch (opcao)
                     {
                         case 1:
                             Console.Clear();
                             Console.WriteLine("Digite o nome: ");
                             string nome = Console.ReadLine();
-                            string sql = $"UPDATE Adotante SET nome VALUE {nome} WHERE cpf = {ad.Cpf}";
+                            string sql = $"UPDATE Adotante SET nome = '{nome}' WHERE cpf = {ad.Cpf};";
+                            Console.ReadKey();
                             SqlCommand cmd = new SqlCommand(sql, conexaosql);
                             cmd.ExecuteNonQuery();
                             conexaosql.Close();
@@ -226,7 +233,7 @@ namespace Adocao
                             Console.Clear();
                             Console.WriteLine("Digite o Sexo: ");
                             string sexo = Console.ReadLine();
-                            string sqls = $"UPDATE Adotante SET sexo VALUE {sexo} WHERE cpf = {ad.Cpf}";
+                            string sqls = $"UPDATE Adotante SET sexo = '{sexo}' WHERE cpf = {ad.Cpf}";
                             SqlCommand cmds = new SqlCommand(sqls, conexaosql);
                             cmds.ExecuteNonQuery();
                             conexaosql.Close();
@@ -235,7 +242,7 @@ namespace Adocao
                             Console.Clear();
                             Console.WriteLine("Digite a Data de Nascimento: ");
                             DateTime data = DateTime.Parse(Console.ReadLine());
-                            string sqld = $"UPDATE Adotante SET sexo VALUE {data} WHERE cpf = {ad.Cpf}";
+                            string sqld = $"UPDATE Adotante SET Data_Nasc '{data}' WHERE cpf = {ad.Cpf}";
                             SqlCommand cmdd = new SqlCommand(sqld, conexaosql);
                             cmdd.ExecuteNonQuery();
                             conexaosql.Close();
@@ -252,7 +259,7 @@ namespace Adocao
                             string cep = Console.ReadLine();
                             Console.WriteLine("Digite a Cidade: ");
                             string cidade = Console.ReadLine();
-                            string sqle = $"UPDATE Adotante SET (Logradouro,numero,bairro,cep,cidade) VALUES {logradouro},{num},{bairro},{cep},{cidade} WHERE cpf = {ad.Cpf};";
+                            string sqle = $"UPDATE Adotante SET Logradouro = '{logradouro}',numero = '{num}',bairro = '{bairro}',cep = '{cep}' ,cidade = '{cidade}' WHERE cpf = {ad.Cpf};";
                             SqlCommand cmde = new SqlCommand(sqle, conexaosql);
                             cmde.ExecuteNonQuery();
                             conexaosql.Close();
@@ -261,74 +268,73 @@ namespace Adocao
                             Console.Clear();
                             Console.WriteLine("Digite o Telefone: ");
                             string tel = Console.ReadLine();
-                            string sqlt = $"UPDATE Adotante SET sexo VALUE {tel} WHERE cpf = {ad.Cpf}";
+                            string sqlt = $"UPDATE Adotante SET telefone = '{tel}' WHERE cpf = {ad.Cpf}";
                             SqlCommand cmdt = new SqlCommand(sqlt, conexaosql);
                             cmdt.ExecuteNonQuery();
                             conexaosql.Close();
                             break;
                     }
                 }
-                else if (op == 2)
+                else
                 {
-                    Animal an = BuscarAnimal();
-                    if (an != null)
-                    {
-                        Banco conn = new Banco();
-                        SqlConnection conexaosql = new SqlConnection(conn.Caminho());
-                        conexaosql.Open();
+                    Console.Clear();
+                    Console.WriteLine("Cadastro de Adotante ou Animal não encontrado! Aperte enter para continuar...");
+                    Console.ReadKey();
+                }
 
-                        int opcao;
-                        Console.Clear();
-                        Console.WriteLine("Qual informação deseja editar?\n1-Familia\n2-Raça\n3-Sexo\n4-Nome");
-                        opcao = int.Parse(Console.ReadLine());
-                        switch (opcao)
-                        {
-                            case 1:
-                                Console.Clear();
-                                Console.WriteLine("Digite a familia: ");
-                                string familia = Console.ReadLine();
-                                string sql = $"UPDATE Animal SET familia VALUE {familia} WHERE chip = {an.Chip}";
-                                SqlCommand cmd = new SqlCommand(sql, conexaosql);
-                                cmd.ExecuteNonQuery();
-                                conexaosql.Close();
-                                break;
-                            case 2:
-                                Console.Clear();
-                                Console.WriteLine("Digite a raça: ");
-                                string raca = Console.ReadLine();
-                                string sqlr = $"UPDATE Animal SET raca VALUE {raca} WHERE chip = {an.Chip}";
-                                SqlCommand cmdr = new SqlCommand(sqlr, conexaosql);
-                                cmdr.ExecuteNonQuery();
-                                conexaosql.Close();
-                                break;
-                            case 3:
-                                Console.Clear();
-                                Console.WriteLine("Digite o sexo: ");
-                                string sexo = Console.ReadLine();
-                                string sqls = $"UPDATE Animal SET familia VALUE {sexo} WHERE chip = {an.Chip}";
-                                SqlCommand cmds = new SqlCommand(sqls, conexaosql);
-                                cmds.ExecuteNonQuery();
-                                conexaosql.Close();
-                                break;
-                            case 4:
-                                Console.Clear();
-                                Console.WriteLine("Digite o nome: ");
-                                string nome = Console.ReadLine();
-                                string sqln = $"UPDATE Animal SET familia VALUE {nome} WHERE chip = {an.Chip}";
-                                SqlCommand cmdn = new SqlCommand(sqln, conexaosql);
-                                cmdn.ExecuteNonQuery();
-                                conexaosql.Close();
-                                break;
-                            default:
-                                Console.WriteLine("Opção inválida!");
-                                break;
-                        }
-                    }
-                    else
+            }
+            else if (op == 2)
+            {
+                Animal an = BuscarAnimal();
+                if (an != null)
+                {
+                    Banco conn = new Banco();
+                    SqlConnection conexaosql = new SqlConnection(conn.Caminho());
+                    conexaosql.Open();
+                    Console.Clear();
+                    Console.WriteLine("Qual informação deseja editar?\n\n1-Familia\n2-Raça\n3-Sexo\n4-Nome");
+                    int opcao = int.Parse(Console.ReadLine());
+                    switch (opcao)
                     {
-                        Console.Clear();
-                        Console.WriteLine("Cadastro de Adotante ou Animal não encontrado! Aperte enter para continuar...");
-                        Console.ReadKey();
+                        case 1:
+                            Console.Clear();
+                            Console.WriteLine("Digite a familia: ");
+                            string familia = Console.ReadLine();
+                            string sql = $"UPDATE Animal SET familia = '{familia}' WHERE chip = {an.Chip}";
+                            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                            cmd.ExecuteNonQuery();
+                            conexaosql.Close();
+                            break;
+                        case 2:
+                            Console.Clear();
+                            Console.WriteLine("Digite a raça: ");
+                            string raca = Console.ReadLine();
+                            string sqlr = $"UPDATE Animal SET raca ='{raca}' WHERE chip = {an.Chip}";
+                            SqlCommand cmdr = new SqlCommand(sqlr, conexaosql);
+                            cmdr.ExecuteNonQuery();
+                            conexaosql.Close();
+                            break;
+                        case 3:
+                            Console.Clear();
+                            Console.WriteLine("Digite o sexo: ");
+                            string sexo = Console.ReadLine();
+                            string sqls = $"UPDATE Animal SET sexo = '{sexo}' WHERE chip = {an.Chip}";
+                            SqlCommand cmds = new SqlCommand(sqls, conexaosql);
+                            cmds.ExecuteNonQuery();
+                            conexaosql.Close();
+                            break;
+                        case 4:
+                            Console.Clear();
+                            Console.WriteLine("Digite o nome: ");
+                            string nome = Console.ReadLine();
+                            string sqln = $"UPDATE Animal SET nome = '{nome}' WHERE chip = {an.Chip}";
+                            SqlCommand cmdn = new SqlCommand(sqln, conexaosql);
+                            cmdn.ExecuteNonQuery();
+                            conexaosql.Close();
+                            break;
+                        default:
+                            Console.WriteLine("Opção inválida!");
+                            break;
                     }
                 }
 
